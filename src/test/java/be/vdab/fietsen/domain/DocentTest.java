@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DocentTest {
@@ -31,9 +32,67 @@ class DocentTest {
     void opslagMet0Mislukt() {
         assertThatIllegalArgumentException().isThrownBy(() -> docent1.opslag(BigDecimal.ZERO));
     }
+    @Test
+    void eenNieuweDocentHeeftGeenBijnamen() {
+        assertThat(docent1.getBijnamen()).isEmpty();
+    }
+
+    @Test
+    void bijnaamToevoegen() {
+        assertThat(docent1.addBijnaam("test")).isTrue();
+        assertThat(docent1.getBijnamen()).containsOnly("test");
+    }
+
+    @Test
+    void tweeKeerDezelfdeNaamMislukt() {
+        docent1.addBijnaam("test");
+        assertThat(docent1.addBijnaam("test")).isFalse();
+        assertThat(docent1.getBijnamen()).containsOnly("test");
+    }
+
+    @Test
+    void nullAlsBijnaamMislukt() {
+        assertThatNullPointerException().isThrownBy(() -> docent1.addBijnaam(null));
+    }
+
+    @Test
+    void eenLegeBijnaamMislukt() {
+        assertThatIllegalArgumentException().isThrownBy(() -> docent1.addBijnaam(""));
+    }
+
+    @Test
+    void eenBijnaamMetEnkelSpatiesMislukt() {
+        assertThatIllegalArgumentException().isThrownBy(() -> docent1.addBijnaam(" "));
+    }
+
+    @Test
+    void bijnaamVerwijderen() {
+        docent1.addBijnaam("test");
+        assertThat(docent1.removeBijnaam("test")).isTrue();
+        assertThat(docent1.getBijnamen()).isEmpty();
+    }
+
+    @Test
+    void eenBijnaamVerwijderenDieJeNietToevoegdeMislukt() {
+        docent1.addBijnaam("test");
+        assertThat(docent1.removeBijnaam("test2")).isFalse();
+        assertThat(docent1.getBijnamen()).containsOnly("test");
+    }
 
     @Test
     void negativeOpslagMislukt() {
         assertThatIllegalArgumentException().isThrownBy(() -> docent1.opslag(BigDecimal.valueOf(-1)));
+    }
+
+    @Test
+    void getBijnamen() {
+    }
+
+    @Test
+    void addBijnaam() {
+    }
+
+    @Test
+    void removeBijnaam() {
     }
 }
