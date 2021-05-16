@@ -2,6 +2,7 @@ package be.vdab.fietsen.repositories;
 
 import be.vdab.fietsen.domain.Adres;
 import be.vdab.fietsen.domain.Campus;
+import be.vdab.fietsen.domain.TelefoonNr;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -42,5 +43,11 @@ class JpaCampusRepositoryTest extends AbstractTransactionalJUnit4SpringContextTe
     @Test
     void findByOnbestaandeId() {
         assertThat(repository.findById(-1)).isNotPresent();
+    }
+
+    @Test
+    void telefonNrsLezen() {
+        assertThat(repository.findById(idVanTestCampus()).get().getTelefoonNrs())
+                .containsOnly(new TelefoonNr("1", false, "test"));
     }
 }

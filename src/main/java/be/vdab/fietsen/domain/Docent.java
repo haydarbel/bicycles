@@ -22,22 +22,27 @@ public class Docent {
     private String emailAdres;
     @Enumerated(EnumType.STRING)
     private Geslacht geslacht;
+
     @ElementCollection
     @CollectionTable(name = "docentenbijnamen",
     joinColumns = @JoinColumn(name = "docentId"))
     @Column(name = "bijnaam")
     private Set<String> bijnamen;
 
+    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "campusId")
+    private Campus campus;
 
 
-    public Docent( String voornaam, String familienaam,
-                  BigDecimal wedde, String emailAdres, Geslacht geslacht) {
+    public Docent(String voornaam, String familienaam,
+                  BigDecimal wedde, String emailAdres, Geslacht geslacht,Campus campus1) {
         this.voornaam = voornaam;
         this.familienaam = familienaam;
         this.wedde = wedde;
         this.emailAdres = emailAdres;
         this.geslacht = geslacht;
         this.bijnamen = new LinkedHashSet<>();
+        setCampus(campus1);
     }
 
     protected Docent() {
@@ -46,6 +51,14 @@ public class Docent {
 
     public Set<String> getBijnamen() {
         return Collections.unmodifiableSet(bijnamen);
+    }
+
+    public Campus getCampus() {
+        return campus;
+    }
+
+    public void setCampus(Campus campus) {
+        this.campus = campus;
     }
 
     public boolean addBijnaam(String bijnaam) {
