@@ -29,7 +29,7 @@ public class JpaDocentRepository implements DocentRepository {
 
     @Override
     public void delete(long id) {
-        findById(id).ifPresent(docent -> manager.remove(docent));
+        findById(id).ifPresent(manager::remove);
     }
 
     @Override

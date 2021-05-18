@@ -6,19 +6,26 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.*;
 
 class DocentTest {
     private final static BigDecimal WEDDE = BigDecimal.valueOf(200);
+    private Verantwoordelijkheid verantwoordelijkheid1;
     private Docent docent1;
+    private Docent docent2;
+    private Docent docent3;
     private Campus campus;
+    private Campus campus2;
 
     @BeforeEach
     void beforeEach() {
         campus = new Campus("test", new Adres("test", "test", "test", "test"));
-        docent1 = new Docent("test", "test", WEDDE, "test@test.be", Geslacht.MAN,campus);
+        campus2 = new Campus("test2", new Adres("test2", "test2", "test2", "test2"));
+        docent1 = new Docent("test", "test", WEDDE, "test@test.be", Geslacht.MAN, campus);
+        docent2 = new Docent("test2", "test2", WEDDE, "test2@test.be", Geslacht.MAN, campus);
+        docent3 = new Docent("test3", "test3", WEDDE, "test3@test.be", Geslacht.MAN, campus2);
+        verantwoordelijkheid1 = new Verantwoordelijkheid("EHBO");
     }
+
     @Test
     void opslag() {
         docent1.opslag(BigDecimal.TEN);
@@ -34,6 +41,7 @@ class DocentTest {
     void opslagMet0Mislukt() {
         assertThatIllegalArgumentException().isThrownBy(() -> docent1.opslag(BigDecimal.ZERO));
     }
+
     @Test
     void eenNieuweDocentHeeftGeenBijnamen() {
         assertThat(docent1.getBijnamen()).isEmpty();
@@ -87,14 +95,44 @@ class DocentTest {
     }
 
     @Test
-    void getBijnamen() {
+    void meerdereDocentenKunnenTotDezelfdeCampusBehoren() {
+        assertThat(campus.getDocenten()).containsOnly(docent1, docent2);
+        assertThat(campus2.getDocenten()).containsOnly(docent3);
     }
 
     @Test
-    void addBijnaam() {
+    void docent1KomtVoorInCampus1() {
+        assertThat(docent1.getCampus()).isEqualTo(campus);
+        assertThat(campus.getDocenten()).contains(docent1);
     }
 
     @Test
-    void removeBijnaam() {
+    void docent1VerhuistVanCampus1NaarCampus2() {
+        docent1.setCampus(campus2);
+        assertThat(docent1.getCampus()).isEqualTo(campus2);
+        assertThat(campus.getDocenten()).doesNotContain(docent1);
+        assertThat(campus2.getDocenten()).contains(docent1);
     }
+
+    @Test
+    void eenNullCampusInDeSetterMislukt() {
+        assertThatNullPointerException().isThrownBy(() -> docent1.setCampus(null));
+    }
+
+    @Test
+    void verantwoordelijkheidToevoegen() {
+        assertThat(docent1.add(verantwoordelijkheid1)).isTrue();
+        assertThat(docent1.getVerantwoordelijkheden())
+                .containsOnly(verantwoordelijkheid1);
+        assertThat(verantwoordelijkheid1.getDocenten()).isEmpty();
+    }
+
+    @Test
+    void verantwoordelijkheidVerwijderen() {
+        assertThat(docent1.add(verantwoordelijkheid1)).isTrue();
+        assertThat(docent1.remove(verantwoordelijkheid1)).isTrue();
+        assertThat(docent1.getVerantwoordelijkheden()).isEmpty();
+        assertThat(verantwoordelijkheid1.getDocenten()).isEmpty();
+    }
+
 }

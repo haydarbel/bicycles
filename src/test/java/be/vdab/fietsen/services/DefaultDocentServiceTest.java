@@ -33,14 +33,14 @@ class DefaultDocentServiceTest {
     void beforeEach() {
         service = new DefaultDocentService(repository);
         campus = new Campus("test", new Adres("test", "test", "test", "test"));
-        docent = new Docent("test", "test", BigDecimal.valueOf(100), "test@test.be", Geslacht.MAN,campus);
+        docent = new Docent("test", "test", BigDecimal.valueOf(200), "test@test.be", Geslacht.MAN,campus);
     }
 
     @Test
     void opslag() {
         when(repository.findById(1)).thenReturn(Optional.of(docent));
         service.opslag(1, BigDecimal.TEN);
-        assertThat(docent.getWedde()).isEqualByComparingTo("100");
+        assertThat(docent.getWedde()).isEqualByComparingTo("220");
         verify(repository).findById(1);
     }
 

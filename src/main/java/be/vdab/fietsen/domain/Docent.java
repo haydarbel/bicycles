@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 //@NamedQuery(name = "Docent.findByWeddeBetween",
@@ -25,28 +26,66 @@ public class Docent {
 
     @ElementCollection
     @CollectionTable(name = "docentenbijnamen",
-    joinColumns = @JoinColumn(name = "docentId"))
+            joinColumns = @JoinColumn(name = "docentId"))
     @Column(name = "bijnaam")
     private Set<String> bijnamen;
 
-    @ManyToOne(fetch = FetchType.LAZY,optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "campusId")
     private Campus campus;
 
+    @ManyToMany
+    @JoinTable(
+            name = "docentenverantwoordelijkheden",
+            joinColumns = @JoinColumn(name = "docentId"),
+            inverseJoinColumns = @JoinColumn(name = "verantwoordelijkheidId"))
+    private Set<Verantwoordelijkheid> verantwoordelijkheden = new LinkedHashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Docent)) return false;
+        Docent docent = (Docent) o;
+        return emailAdres.equalsIgnoreCase(docent.emailAdres);
+    }
+
+    @Override
+    public int hashCode() {
+        return emailAdres == null ? 0 : emailAdres.toLowerCase().hashCode();
+    }
 
     public Docent(String voornaam, String familienaam,
-                  BigDecimal wedde, String emailAdres, Geslacht geslacht,Campus campus1) {
+                  BigDecimal wedde, String emailAdres, Geslacht geslacht, Campus campus) {
         this.voornaam = voornaam;
         this.familienaam = familienaam;
         this.wedde = wedde;
         this.emailAdres = emailAdres;
         this.geslacht = geslacht;
         this.bijnamen = new LinkedHashSet<>();
-        setCampus(campus1);
+        setCampus(campus);
     }
 
     protected Docent() {
 
+    }
+
+    public boolean add(Verantwoordelijkheid verantwoordelijkheid) {
+        var toegevogd = verantwoordelijkheden.add(verantwoordelijkheid);
+        if (!verantwoordelijkheid.getDocenten().contains(this)) {
+            verantwoordelijkheid.add(this);
+        }
+        return toegevogd;
+    }
+
+    public boolean remove(Verantwoordelijkheid verantwoordelijkheid) {
+        var verwijderd = verantwoordelijkheden.remove(verantwoordelijkheid);
+        if (verantwoordelijkheid.getDocenten().contains(this)) {
+            verantwoordelijkheid.remove(this);
+        }
+        return verwijderd;
+    }
+
+    public Set<Verantwoordelijkheid> getVerantwoordelijkheden() {
+        return Collections.unmodifiableSet(verantwoordelijkheden);
     }
 
     public Set<String> getBijnamen() {
@@ -58,6 +97,9 @@ public class Docent {
     }
 
     public void setCampus(Campus campus) {
+        if (!campus.getDocenten().contains(this)) {
+            campus.add(this);
+        }
         this.campus = campus;
     }
 
@@ -71,7 +113,6 @@ public class Docent {
     public boolean removeBijnaam(String bijnaam) {
         return bijnamen.remove(bijnaam);
     }
-
 
 
     public void opslag(BigDecimal percentage) {

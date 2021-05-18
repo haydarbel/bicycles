@@ -1,6 +1,7 @@
 package be.vdab.fietsen.repositories;
 
 import be.vdab.fietsen.domain.Campus;
+import be.vdab.fietsen.domain.Docent;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -23,4 +24,6 @@ public class JpaCampusRepository implements CampusRepository {
     public Optional<Campus> findById(long id) {
         return Optional.ofNullable(manager.find(Campus.class, id));
     }
+
+
 }
