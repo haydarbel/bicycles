@@ -124,7 +124,7 @@ class DocentTest {
         assertThat(docent1.add(verantwoordelijkheid1)).isTrue();
         assertThat(docent1.getVerantwoordelijkheden())
                 .containsOnly(verantwoordelijkheid1);
-        assertThat(verantwoordelijkheid1.getDocenten()).isEmpty();
+        assertThat(verantwoordelijkheid1.getDocenten()).containsOnly(docent1);
     }
 
     @Test

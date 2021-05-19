@@ -12,8 +12,16 @@ import java.util.Set;
 //        query = "select d from Docent d where d.wedde between :van and :tot order by d.wedde,d.id")
 @Entity
 @Table(name = "docenten")
+@NamedEntityGraph(name = Docent.MET_CAMPUS,
+        attributeNodes = @NamedAttributeNode("campus"))
+/*@NamedEntityGraph(name = "Docent.metCampusEnVerantwoordelikjheden",
+        attributeNodes = {@NamedAttributeNode("campus"), @NamedAttributeNode("verantwoordelijkheden")})*/
+/*@NamedEntityGraph(
+        name = "Docent.metCampusEnManager",
+        attributeNodes = @NamedAttributeNode(value = "campus", subgraph = "metManager"),
+        subgraphs = @NamedSubgraph(name = "metManager", attributeNodes = @NamedAttributeNode("manager")))*/
 public class Docent {
-
+    public static final String MET_CAMPUS = "Docent.metCampus";
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private long id;
