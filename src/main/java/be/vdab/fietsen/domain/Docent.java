@@ -3,6 +3,7 @@ package be.vdab.fietsen.domain;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -41,6 +42,8 @@ public class Docent {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "campusId")
     private Campus campus;
+    @Version
+    private Timestamp versie;//Uit Java.sql
 
     @ManyToMany
     @JoinTable(

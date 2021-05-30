@@ -29,4 +29,5 @@ public interface DocentRepository {
 
     int algemeneOpslag(BigDecimal percentage);
 
+    Optional<Docent> findByIdWithLock(long id);
 }

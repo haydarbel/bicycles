@@ -22,7 +22,6 @@ class JpaCursusRepositoryTest extends AbstractTransactionalJUnit4SpringContextTe
     private static final String INDIVIDUELE_CURSUSSEN = "individuelecursussen";
     private static final LocalDate EEN_DATUM = LocalDate.of(2019, 1, 1);
     private final EntityManager manager;
-
     private final JpaCursusRepository repository;
 
     JpaCursusRepositoryTest(EntityManager manager, JpaCursusRepository repository) {
